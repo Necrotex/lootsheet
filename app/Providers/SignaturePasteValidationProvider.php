@@ -36,9 +36,7 @@ class SignaturePasteValidationProvider extends ServiceProvider
                         'Common Perimeter Deposit',
                         'Ordinary Perimeter Deposit',
                     ]
-
                 ],
-
                 'Cosmic Signature' => [
                     'Relic Site' => [
                         'Forgotten Core Data Field',

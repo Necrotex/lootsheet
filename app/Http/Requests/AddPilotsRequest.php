@@ -11,7 +11,7 @@ class AddPilotsRequest extends Request
      */
     public function authorize()
     {
-        return true;
+        return true; //todo: auth
     }
 
     /**

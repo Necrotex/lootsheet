@@ -12,6 +12,7 @@
 |
 */
 
+//todo: protect routs with auth
 Route::group(['middleware' => ['web']], function () {
     Route::get('/', ['uses' => 'HomeController@index', 'as' => 'home']);
 
@@ -30,8 +31,6 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/sheets/pay/{id}', ['uses' => 'SheetController@markAsPaid', 'as' => 'sheets.mark_as_paid']);
     Route::post('/sheets/defanger/{id}', ['uses' => 'SheetController@addDefanger', 'as' => 'sheets.add_defanger']);
 
-
     Route::get('/options', ['uses' => 'OptionsController@index', 'as' => 'options.all']);
     Route::post('/options/{id}', ['uses' => 'OptionsController@action', 'as' => 'options.action']);
-
 });

@@ -1,9 +1,7 @@
 <?php
-
 echo BootForm::open(['route' => ['sheets.add_escalator', $site->id]]);
 echo BootForm::hidden('_action', 'add_escalator');
 echo BootForm::text('name', 'Name');
-
 echo BootForm::select('ship', 'Ship',
     [
         'Archon'     => 'Archon',

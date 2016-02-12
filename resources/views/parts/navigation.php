@@ -2,7 +2,6 @@
 <div class="navbar navbar-default navbar-static-top">
     <div class="container">
         <div class="navbar-header">
-
             <a class="navbar-brand brand-logo" href="<?= URL::route('home') ?>">
                 <img alt="Brand" src="<?= URL::asset('/img/logo.png') ?>" height="60px">
             </a>

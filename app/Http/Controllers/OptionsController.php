@@ -10,7 +10,6 @@ class OptionsController extends Controller
     public function index()
     {
         $options = Option::all();
-
         view()->share('options', $options);
 
         return $this->view('options.overview');
@@ -30,7 +29,6 @@ class OptionsController extends Controller
 
         $option->name = $request->input('name');
         $option->value = $request->input('value');
-
         $option->save();
 
         return redirect()->route('options.all');

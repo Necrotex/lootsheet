@@ -1,35 +1,31 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>C0RE :: Lootsheet</title>
+    <head>
+        <meta charset="UTF-8">
+        <title>C0RE :: Lootsheet</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="<?= URL::asset('css/style.css'); ?>">
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="<?= URL::asset('css/style.css'); ?>">
 
-</head>
-<body>
+    </head>
+    <body>
+        <div id="wrap">
+            <?php echo $navigation; ?>
 
-<div id="wrap">
+            <div class="container content">
+                <?php echo $content; ?>
+            </div>
+        </div>
 
-    <?php echo $navigation; ?>
+        <?php echo $footer; ?>
 
-    <div class="container content">
-        <?php echo $content; ?>
-    </div>
-
-</div>
-
-<?php echo $footer; ?>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script src="<?= URL::asset('js/script.js') ?>"></script>
-
-</body>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script src="<?= URL::asset('js/script.js') ?>"></script>
+    </body>
 </html>

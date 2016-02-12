@@ -4,9 +4,7 @@
 
 if ($site->sheet->is_paid):?>
     <div class="alert alert-success" role="alert" style="">This sheet is complete. Nothing do to here. Move along.</div>
-    <?php
-endif;
-?>
+<?php endif; ?>
 
 <div class="row">
     <div class="col-md-9">
@@ -37,26 +35,25 @@ endif;
             <span class="pull-right"> Pilots: <?= count($site->sheet->pilots); ?></span><br/>
         </div>
 
-
         <div class="jumbotron">
             <h3>Pilots</h3>
 
             <table class="table table-striped">
                 <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Role</th>
-                    <th>Ship</th>
-                    <th>Modifier</th>
-                    <th>Points</th>
-                    <th>Cut %</th>
-                    <th>Cut ISK</th>
-                    <?php if ($site->finished): ?>
-                        <th>Paid</th>
-                    <?php else: ?>
-                        <th></th>
-                    <?php endif; ?>
-                </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Ship</th>
+                        <th>Modifier</th>
+                        <th>Points</th>
+                        <th>Cut %</th>
+                        <th>Cut ISK</th>
+                        <?php if ($site->finished): ?>
+                            <th>Paid</th>
+                        <?php else: ?>
+                            <th></th>
+                        <?php endif; ?>
+                    </tr>
                 </thead>
                 <tbody>
                 <?php foreach ($site->sheet->pilots->all() as $pilot):
@@ -192,7 +189,6 @@ endif;
                         <h4>Pay all pilots to contiune</h4>
                     <?php endif; ?>
                 <?php endif; ?>
-
             </div>
         <?php endif; ?>
     </div>
