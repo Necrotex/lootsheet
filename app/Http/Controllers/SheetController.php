@@ -176,11 +176,17 @@ class SheetController extends Controller
         if (is_null($site))
             return redirect()->route('sheets.single');
 
+        $options = Option::all();
+
         $site->active = false;
         $site->finished = true;
         $site->save();
 
         $site->sheet->total_isk = $request->input('payout');
+        $site->sheet->corp_cut  = $site->sheet->total_isk * $options->where('key', 'corp_cut')->first()->value;
+        $site->sheet->payout  = $site->sheet->total_isk - $site->sheet->corp_cut;
+
+
         $site->sheet->save();
 
         if ($request->has('comment')) {

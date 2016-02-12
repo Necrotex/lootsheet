@@ -6,7 +6,6 @@ if ($site->sheet->is_paid):?>
     <div class="alert alert-success" role="alert" style="">This sheet is complete. Nothing do to here. Move along.</div>
     <?php
 endif;
-$payout = $site->sheet->total_isk - ($site->sheet->total_isk * $options->where('key', 'corp_cut')->first()->value);
 ?>
 
 <div class="row">
@@ -21,11 +20,11 @@ $payout = $site->sheet->total_isk - ($site->sheet->total_isk * $options->where('
 
             <span class="pull-left">Created at: <?= $site->sheet->created_at; ?></span>
             <span
-                class="pull-right"> Corp Cut: <?= number_format($site->sheet->total_isk * $options->where('key', 'corp_cut')->first()->value, 2, '.', ' '); ?>
+                class="pull-right"> Corp Cut: <?= number_format($site->sheet->corp_cut, 2, '.', ' '); ?>
                 ISK</span>
             <br/>
             <span class="pull-left">Last Updated: <?= $site->sheet->updated_at; ?></span>
-            <span class="pull-right"> Payout: <strong><?= number_format($payout, 2, '.', ' '); ?> ISK</strong></span>
+            <span class="pull-right"> Payout: <strong><?= number_format($site->sheet->payout, 2, '.', ' '); ?> ISK</strong></span>
             <br/>
             <span class="pull-left"></span>
             <?php $points = 0;
@@ -63,7 +62,7 @@ $payout = $site->sheet->total_isk - ($site->sheet->total_isk * $options->where('
                 <?php foreach ($site->sheet->pilots->all() as $pilot):
                     $points = (1 + $site->sheet->modifier) * $pilot->points;
                     $cut = $points / $site->sheet->points;
-                    $pilot_cut = $payout * $cut;
+                    $pilot_cut = $site->sheet->payout * $cut;
                     ?>
                     <tr>
                         <td><?= $pilot->name ?></td>

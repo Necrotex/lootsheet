@@ -20,6 +20,8 @@ class CreateSheetTable extends Migration
             $table->boolean('is_paid')->default(false);
             $table->float('points')->nullable();
             $table->double('total_isk')->default(0);
+            $table->double('payout')->default(0);
+            $table->double('corp_cut')->default(0);
         });
 
         Schema::table('sheet', function ($table) {
