@@ -27,7 +27,7 @@ class SheetController extends Controller
             return redirect()->route('home');
         }
 
-        $signature = Signature::find($id)->first();
+        $signature = Signature::find($id);
 
         if (is_null($signature)) {
             return redirect()->route('sheets.all');

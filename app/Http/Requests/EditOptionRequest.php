@@ -12,7 +12,7 @@ class EditOptionRequest extends Request
      */
     public function authorize()
     {
-        return Auth::check(); //todo: admins only?
+        return Auth::user()->admin;
     }
 
     /**

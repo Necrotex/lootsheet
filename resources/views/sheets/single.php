@@ -4,6 +4,10 @@
 
 if ($site->sheet->is_paid):?>
     <div class="alert alert-success" role="alert" style="">This sheet is complete. Nothing do to here. Move along.</div>
+<?php endif;
+
+if (!$site->active):?>
+    <div class="alert alert-warning" role="alert" style="">This sheet is no longer active.</div>
 <?php endif; ?>
 
 <div class="row">
@@ -25,12 +29,7 @@ if ($site->sheet->is_paid):?>
             <span class="pull-right"> Payout: <strong><?= number_format($site->sheet->payout, 2, '.', ' '); ?> ISK</strong></span>
             <br/>
             <span class="pull-left"></span>
-            <?php $points = 0;
-            foreach ($site->sheet->pilots as $pilot) {
-                $points += $pilot->points;
-            }
-            ?>
-            <span class="pull-right"> Points: <?= $points; ?></span>
+            <span class="pull-right"> Points: <?= $site->sheet->pilots->sum('points');; ?></span>
             <br/>
             <span class="pull-right"> Pilots: <?= count($site->sheet->pilots); ?></span><br/>
         </div>
@@ -44,12 +43,12 @@ if ($site->sheet->is_paid):?>
                         <th>Name</th>
                         <th>Role</th>
                         <th>Ship</th>
-                        <th>Modifier</th>
-                        <th>Points</th>
-                        <th>Cut %</th>
-                        <th>Cut ISK</th>
+                        <th class="text-right">Modifier</th>
+                        <th class="text-right">Points</th>
+                        <th class="text-right">Cut %</th>
+                        <th class="text-right">Cut ISK</th>
                         <?php if ($site->finished): ?>
-                            <th>Paid</th>
+                            <th class="text-right">Paid</th>
                         <?php else: ?>
                             <th></th>
                         <?php endif; ?>
@@ -65,13 +64,12 @@ if ($site->sheet->is_paid):?>
                         <td><?= $pilot->name ?></td>
                         <td><?= $pilot->role; ?></td>
                         <td><?= $pilot->ship; ?></td>
-                        <td><?= $site->sheet->modifier; ?></td>
+                        <td class="text-right"><?= $site->sheet->modifier; ?></td>
                         <td class="text-right"><?= $points; ?></td>
                         <td class="text-right"><?= number_format($cut, 2); ?></td>
                         <td class="text-right"><?= number_format($pilot_cut, 2, '.', ' '); ?> </td>
-
+                        <td>
                         <?php if ($site->finished): ?>
-                            <td>
                                 <?php if ($pilot->paid): ?>
                                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                 <?php else:
@@ -85,9 +83,7 @@ if ($site->sheet->is_paid):?>
                                             ->render());
                                     ?>
                                 <?php endif; ?>
-                            </td>
-                        <?php else: ?>
-                            <td>
+                        <?php elseif(!$site->finished && $site->active): ?>
                                 <?php echo Modal::named('remove_pilot_' . $pilot->id)
                                     ->withTitle('Remove Pilot')//todo: Use pilot name
                                     ->withButton(Button::danger('remove')->setSize('btn-xs'))
@@ -95,9 +91,8 @@ if ($site->sheet->is_paid):?>
                                         ->with('pilot', $pilot)
                                         ->with('id', $site->id)
                                         ->render());
-                                ?>
-                            </td>
-                        <?php endif; ?>
+                        endif; ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
@@ -133,17 +128,7 @@ if ($site->sheet->is_paid):?>
     </div>
 
     <div class="col-md-3">
-        <?php if(!$site->finished): ?>
-            <div class="jumbotron">
-                <?php echo Modal::named('close')
-                          ->withTitle('Close Sheet')
-                          ->withButton(Button::danger('Close')->block())
-                          ->withBody(view('modals.close_sheet')->with('id', $site->id)->render());
-                ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if (!$site->active): ?>
+        <?php if ($site->active): ?>
             <div class="jumbotron">
                 <?php if ($site->sheet->pilots->where('role', 'Bookmarker')->count() == 0):
                     echo Modal::named('add_bookmarker')
@@ -178,7 +163,7 @@ if ($site->sheet->is_paid):?>
             </div>
         <?php endif; ?>
 
-        <?php if (!$site->sheet->is_paid && $site->sheet->pilots->count() > 0): ?>
+        <?php if (!$site->sheet->is_paid && $site->sheet->pilots->count() > 0 && $site->active): ?>
             <div class="jumbotron">
                 <?php if (!$site->finished): ?>
                     <div>
@@ -205,6 +190,16 @@ if ($site->sheet->is_paid):?>
                         <h4>Pay all pilots to contiune</h4>
                     <?php endif; ?>
                 <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if(!$site->finished && $site->active): ?>
+            <div class="jumbotron">
+                <?php echo Modal::named('close')
+                                ->withTitle('Close Sheet')
+                                ->withButton(Button::danger('Close')->block())
+                                ->withBody(view('modals.close_sheet')->with('id', $site->id)->render());
+                ?>
             </div>
         <?php endif; ?>
     </div>

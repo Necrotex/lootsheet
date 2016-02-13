@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class AuthController extends Controller
 {
+	protected $guard = 'admin';
+
     public function login(){
 	    session(['state' => uniqid()]);
 
@@ -72,6 +74,11 @@ class AuthController extends Controller
 		$user->character_id = $character->CharacterID;
 		$user->name = $character->CharacterName;
 		$user->character_owner_hash = $character->CharacterOwnerHash;
+
+		if($user->character_id == env('LOOTSHEET_ADMIN_ID')){
+			$user->admin = true;
+		}
+
 		$user->save();
 
 		Auth::login($user);
