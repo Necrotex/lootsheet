@@ -14,17 +14,43 @@
                 <li>
                     <a href="<?= URL::route('home') ?>">Home</a>
                 </li>
-                <li>
-                    <a href="<?= URL::route('sig.new') ?>">Add new Site</a>
-                </li>
-                <li>
-                    <a href="<?= URL::route('sheets.all') ?>">Sheets</a>
-                </li>
-                <li>
-                    <a href="<?= URL::route('options.all') ?>">Options</a>
-                </li>
+
+                <?php if(Auth::check()): ?>
+                    <li>
+                        <a href="<?= URL::route('sig.new') ?>">Add new Site</a>
+                    </li>
+                    <li>
+                        <a href="<?= URL::route('sheets.all') ?>">Sheets</a>
+                    </li>
+                <?php endif; ?>
             </ul>
+
+            <?php if(Auth::check() && Auth::user()->admin): ?>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="<?= URL::route('options.all') ?>">Options</a>
+                            </li>
+                            <li>
+                                <a href="<?= URL::route('stats.all') ?>">Stats</a>
+                            </li>
+                            <li>
+                                <a href="<?= URL::route('admin.index') ?>">Users</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            <?php endif; ?>
+
+            <?php if(Auth::check()): ?>
+                <p class="navbar-text navbar-right">
+                    Signed in as <strong><?= Auth::user()->name; ?></strong>
+                    (<a href="<?=URL::route('auth.logout'); ?>" class="navbar-link">Logout</a>)
+                </p>
+            <?php endif; ?>
+
         </div>
-        <!--/.nav-collapse -->
     </div>
 </div>

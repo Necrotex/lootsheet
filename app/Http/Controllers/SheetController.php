@@ -180,7 +180,6 @@ class SheetController extends Controller
 
         $options = Option::all();
 
-        $site->active   = false;
         $site->finished = true;
         $site->save();
 
@@ -193,14 +192,14 @@ class SheetController extends Controller
             $comment            = new Comment();
             $comment->user_id   = Auth::user()->id;
             $comment->comment   = $request->input('comment');
-            $comment->type      = 'site_finnished_comment';
+            $comment->type      = 'site_info';
             $comment->sheet_id  = $site->sheet->id;
             $comment->save();
         }
 
         $comment            = new Comment();
         $comment->user_id   = Auth::user()->id;
-        $comment->comment   = 'Marked as paid';
+        $comment->comment   = 'Marked as finished';
         $comment->type      = 'sheet_info';
         $comment->sheet_id  = $site->sheet->id;
         $comment->save();
@@ -256,6 +255,9 @@ class SheetController extends Controller
         $site->sheet->is_paid = true;
         $site->sheet->save();
 
+        $site->active = false;
+        $site->save();
+
         $comment            = new Comment();
         $comment->user_id   = Auth::user()->id;
         $comment->comment   = 'Marked as paid';
@@ -283,13 +285,13 @@ class SheetController extends Controller
         //add a log entry when a user is removed
         $comment            = new Comment();
         $comment->user_id   = Auth::user()->id;
-        $comment->type      = 'sheet_log';
+        $comment->type      = 'sheet_important';
         $comment->comment   = 'Removed Pilot ' . $pilot->name . ' with role ' . $pilot->role;
         $comment->sheet_id  = $site->sheet->id;
         $comment->save();
 
         $site->sheet->points -= $pilot->points;
-        $site->save();
+        $site->sheet->save();
 
         $pilot->delete();
 
@@ -310,7 +312,7 @@ class SheetController extends Controller
 
         $comment            = new Comment();
         $comment->user_id   = Auth::user()->id;
-        $comment->type      = 'sheet_log';
+        $comment->type      = 'sheet_important';
         $comment->comment   = 'Closed with comment: ' . $request->input('comment');
         $comment->sheet_id  = $site->sheet->id;
         $comment->save();

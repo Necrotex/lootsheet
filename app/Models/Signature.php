@@ -15,6 +15,6 @@ class Signature extends Model
 
     public function user()
     {
-        return $this->hasOne('App\Models\User', 'id');
+        return $this->hasOne('App\Models\User', 'id', 'user_id');
     }
 }

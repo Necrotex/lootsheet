@@ -13,7 +13,6 @@ class Sheet extends Model
         return $this->belongsTo('App\Models\Signature', 'site_id');
     }
 
-
     public function pilots()
     {
         return $this->hasMany('App\Models\Pilot');
@@ -21,6 +20,6 @@ class Sheet extends Model
 
     public function comments()
     {
-        return $this->hasMany('App\Models\Comment');
+        return $this->hasMany('App\Models\Comment', 'sheet_id', 'id');
     }
 }

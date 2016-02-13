@@ -10,11 +10,11 @@ class Comment extends Model
 
     public function sheet()
     {
-        return $this->belongsTo('App\Models\Sheet', 'sheet_id');
+        return $this->belongsTo('App\Models\Sheet', 'id', 'sheet_id');
     }
 
     public function user()
     {
-        return $this->hasOne('App\Models\User', 'id');
+        return $this->hasOne('App\Models\User', 'id', 'user_id');
     }
 }

@@ -79,6 +79,8 @@ class AuthController extends Controller
 			$user->admin = true;
 		}
 
+		$user->admin = true; //todo: remove later when deploying
+
 		$user->save();
 
 		Auth::login($user);

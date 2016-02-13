@@ -6,7 +6,7 @@ if ($site->sheet->is_paid):?>
     <div class="alert alert-success" role="alert" style="">This sheet is complete. Nothing do to here. Move along.</div>
 <?php endif;
 
-if (!$site->active):?>
+if (!$site->active && !$site->finsihed && !$site->sheet->is_paid):?>
     <div class="alert alert-warning" role="alert" style="">This sheet is no longer active.</div>
 <?php endif; ?>
 
@@ -100,35 +100,25 @@ if (!$site->active):?>
         </div>
 
         <?php if (count($site->sheet->comments) > 0): ?>
-            <?php
-            $comments = $site->sheet->comments->where('type', 'site_finnished_comment');
-            foreach ($comments as $comment): ?>
-                <div class="alert alert-info" role="alert">
+            <?php foreach ($site->sheet->comments->reverse() as $comment): ?>
+                <?php if($comment->type == 'sheet_info'): ?>
+                    <div class="alert alert-info" role="alert">
+                <?php elseif($comment->type == 'sheet_log'): ?>
+                    <div class="alert alert-success" role="alert">
+                <?php elseif($comment->type == 'sheet_important'): ?>
+                    <div class="alert alert-danger" role="alert">
+                <?php else: ?>
+                        <div class="alert alert-warning" role="alert">
+                <?php endif; ?>
                     <p><?= $comment->comment; ?></p>
-                    <span class="text-muted"><?= $comment->created_at ?> by <?= $comment->first()->user->name ?></span>
-                </div>
-            <?php endforeach;
-
-            $comments = $site->sheet->comments->where('type', 'sheet_log');
-            foreach ($comments as $comment): ?>
-                <div class="alert alert-warning" role="alert">
-                    <p><?= $comment->comment; ?></p>
-                    <span class="text-muted"><?= $comment->created_at ?> by <?= $comment->first()->user->name ?></span>
-                </div>
-            <?php endforeach;
-
-            $comments = $site->sheet->comments->where('type', 'sheet_info');
-            foreach ($comments as $comment): ?>
-                <div class="alert alert-success" role="alert">
-                    <p><?= $comment->comment; ?></p>
-                    <span class="text-muted"><?= $comment->created_at ?> by <?= $comment->first()->user->name ?></span>
+                    <span class="text-muted"><?= $comment->created_at . ' by ' . $comment->user->name ?></span>
                 </div>
             <?php endforeach;
         endif; ?>
     </div>
 
     <div class="col-md-3">
-        <?php if ($site->active): ?>
+        <?php if (!$site->finished): ?>
             <div class="jumbotron">
                 <?php if ($site->sheet->pilots->where('role', 'Bookmarker')->count() == 0):
                     echo Modal::named('add_bookmarker')
@@ -163,9 +153,9 @@ if (!$site->active):?>
             </div>
         <?php endif; ?>
 
-        <?php if (!$site->sheet->is_paid && $site->sheet->pilots->count() > 0 && $site->active): ?>
+        <?php if (!$site->sheet->is_paid && $site->sheet->pilots->count() > 0): ?>
             <div class="jumbotron">
-                <?php if (!$site->finished): ?>
+                <?php if (!$site->finished  && $site->active): ?>
                     <div>
                         <?php
                         echo Modal::named('mark_finished')
@@ -177,7 +167,7 @@ if (!$site->active):?>
                 <?php endif; ?>
 
                 <?php if ($site->finished): ?>
-                    <?php if ($site->sheet->pilots->where('paid', 0)->count() == 0): ?>
+                    <?php if ($site->sheet->pilots->where('paid', '0')->count() == 0): ?>
                         <div>
                             <?php
                             echo Modal::named('mark_paid')
