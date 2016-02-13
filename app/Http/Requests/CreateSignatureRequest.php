@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Facades\Auth;
+
 class CreateSignatureRequest extends Request
 {
     /**
@@ -11,7 +13,7 @@ class CreateSignatureRequest extends Request
      */
     public function authorize()
     {
-        return true; //todo: needs real auth
+        return Auth::check();
     }
 
     /**

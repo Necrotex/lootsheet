@@ -12,7 +12,7 @@ if ($site->sheet->is_paid):?>
             <span class=""><strong><?= $site->sig_id; ?> (<?= $site->sig_name ?>)</strong></span>
             <br/>
 
-            <span class="pull-left">Created by: <?= $site->creator; ?></span>
+            <span class="pull-left">Created by: <?= $site->user->name; ?></span>
             <span class="pull-right"> Total: <?= number_format($site->sheet->total_isk, 2, '.', ' ') ?> ISK</span>
             <br/>
 
@@ -108,11 +108,9 @@ if ($site->sheet->is_paid):?>
             <?php
             $comments = $site->sheet->comments->where('type', 'site_finnished_comment');
             foreach ($comments as $comment): ?>
-                <div class="jumbotron">
-                    <h4>Comment:</h4>
-
+                <div class="alert alert-info" role="alert">
                     <p><?= $comment->comment; ?></p>
-                    <span class="text-muted"><?= $comment->created_at ?> by <?= $comment->user_id ?></span>
+                    <span class="text-muted"><?= $comment->created_at ?> by <?= $comment->first()->user->name ?></span>
                 </div>
             <?php endforeach;
 
@@ -120,14 +118,32 @@ if ($site->sheet->is_paid):?>
             foreach ($comments as $comment): ?>
                 <div class="alert alert-warning" role="alert">
                     <p><?= $comment->comment; ?></p>
-                    <span class="text-muted"><?= $comment->created_at ?> by <?= $comment->user_id ?></span>
+                    <span class="text-muted"><?= $comment->created_at ?> by <?= $comment->first()->user->name ?></span>
                 </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
+            <?php endforeach;
+
+            $comments = $site->sheet->comments->where('type', 'sheet_info');
+            foreach ($comments as $comment): ?>
+                <div class="alert alert-success" role="alert">
+                    <p><?= $comment->comment; ?></p>
+                    <span class="text-muted"><?= $comment->created_at ?> by <?= $comment->first()->user->name ?></span>
+                </div>
+            <?php endforeach;
+        endif; ?>
     </div>
 
     <div class="col-md-3">
-        <?php if (!$site->finished): ?>
+        <?php if(!$site->finished): ?>
+            <div class="jumbotron">
+                <?php echo Modal::named('close')
+                          ->withTitle('Close Sheet')
+                          ->withButton(Button::danger('Close')->block())
+                          ->withBody(view('modals.close_sheet')->with('id', $site->id)->render());
+                ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!$site->active): ?>
             <div class="jumbotron">
                 <?php if ($site->sheet->pilots->where('role', 'Bookmarker')->count() == 0):
                     echo Modal::named('add_bookmarker')

@@ -19,9 +19,13 @@ class CreateSiteTable extends Migration
             $table->string('sig_type');
             $table->string('sig_group');
             $table->string('sig_name');
-            $table->string('creator');
+            $table->integer('user_id')->length(10)->unsigned();
             $table->boolean('finished')->default(false);
-            $table->boolean('active')->default(false);
+            $table->boolean('active')->default(true);
+        });
+
+        Schema::table('site', function ($table) {
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

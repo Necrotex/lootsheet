@@ -18,7 +18,7 @@ class CreateSheetTable extends Migration
             $table->integer('site_id')->length(10)->unsigned();
             $table->double('modifier')->nullable();
             $table->boolean('is_paid')->default(false);
-            $table->float('points')->nullable();
+            $table->float('points')->default(0);
             $table->double('total_isk')->default(0);
             $table->double('payout')->default(0);
             $table->double('corp_cut')->default(0);

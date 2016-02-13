@@ -12,4 +12,9 @@ class Signature extends Model
     {
         return $this->hasOne('App\Models\Sheet', 'site_id');
     }
+
+    public function user()
+    {
+        return $this->hasOne('App\Models\User', 'id');
+    }
 }

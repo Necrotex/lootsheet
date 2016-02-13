@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Requests;
+
+use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Auth;
 
-class EditOptionRequest extends Request
+class CloseSheetRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -12,7 +14,7 @@ class EditOptionRequest extends Request
      */
     public function authorize()
     {
-        return Auth::check(); //todo: admins only?
+        return Auth::check();
     }
 
     /**
@@ -23,8 +25,7 @@ class EditOptionRequest extends Request
     public function rules()
     {
         return [
-            'name'  => 'required',
-            'value' => 'required|numeric'
+            'comment' => 'required'
         ];
     }
 }

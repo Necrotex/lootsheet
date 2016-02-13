@@ -9,6 +9,7 @@ use App\Models\Option;
 use App\Models\Pilot;
 use App\Models\Signature;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SheetController extends Controller
 {
@@ -26,16 +27,16 @@ class SheetController extends Controller
             return redirect()->route('home');
         }
 
-        $sinature = Signature::find($id);
+        $signature = Signature::find($id)->first();
 
-        if (is_null($sinature)) {
+        if (is_null($signature)) {
             return redirect()->route('sheets.all');
         }
 
         $options = Option::all();
 
         view()->share('options', $options);
-        view()->share('site', $sinature);
+        view()->share('site', $signature);
 
         return $this->view('sheets.single');
     }
@@ -59,7 +60,7 @@ class SheetController extends Controller
         $bookmarker->points     = $points->value;
         $bookmarker->save();
 
-        $site->sheet->points += $site->sheet->points;
+        $site->sheet->points += $bookmarker->points;
         $site->sheet->save();
 
         return redirect()->route('sheets.single', ['id' => $id]);
@@ -190,12 +191,19 @@ class SheetController extends Controller
 
         if ($request->has('comment')) {
             $comment            = new Comment();
-            $comment->user_id   = 1; //todo: link with auth
+            $comment->user_id   = Auth::user()->id;
             $comment->comment   = $request->input('comment');
             $comment->type      = 'site_finnished_comment';
             $comment->sheet_id  = $site->sheet->id;
             $comment->save();
         }
+
+        $comment            = new Comment();
+        $comment->user_id   = Auth::user()->id;
+        $comment->comment   = 'Marked as paid';
+        $comment->type      = 'sheet_info';
+        $comment->sheet_id  = $site->sheet->id;
+        $comment->save();
 
         return redirect()->route('sheets.single', ['id' => $id]);
     }
@@ -226,6 +234,13 @@ class SheetController extends Controller
         $pilot->paid    = true;
         $pilot->save();
 
+        $comment            = new Comment();
+        $comment->user_id   = Auth::user()->id;
+        $comment->comment   = 'Paid ' . $pilot->name;
+        $comment->type      = 'sheet_info';
+        $comment->sheet_id  = $site->sheet->id;
+        $comment->save();
+
         return redirect()->route('sheets.single', ['id' => $id]);
     }
 
@@ -240,6 +255,13 @@ class SheetController extends Controller
 
         $site->sheet->is_paid = true;
         $site->sheet->save();
+
+        $comment            = new Comment();
+        $comment->user_id   = Auth::user()->id;
+        $comment->comment   = 'Marked as paid';
+        $comment->type      = 'sheet_info';
+        $comment->sheet_id  = $site->sheet->id;
+        $comment->save();
 
         return redirect()->route('sheets.single', ['id' => $id]);
     }
@@ -260,7 +282,7 @@ class SheetController extends Controller
 
         //add a log entry when a user is removed
         $comment            = new Comment();
-        $comment->user_id   = 0; //todo: link to user
+        $comment->user_id   = Auth::user()->id;
         $comment->type      = 'sheet_log';
         $comment->comment   = 'Removed Pilot ' . $pilot->name . ' with role ' . $pilot->role;
         $comment->sheet_id  = $site->sheet->id;
@@ -270,6 +292,28 @@ class SheetController extends Controller
         $site->save();
 
         $pilot->delete();
+
+        return redirect()->route('sheets.single', ['id' => $id]);
+    }
+
+    public function close(Requests\CloseSheetRequest $request, $id)
+    {
+        $site = Signature::find($id);
+
+        if (is_null($site))
+            return redirect()->route('sheets.single', ['id' => $id]);
+
+
+        $site->finished = false;
+        $site->active   = false;
+        $site->save();
+
+        $comment            = new Comment();
+        $comment->user_id   = Auth::user()->id;
+        $comment->type      = 'sheet_log';
+        $comment->comment   = 'Closed with comment: ' . $request->input('comment');
+        $comment->sheet_id  = $site->sheet->id;
+        $comment->save();
 
         return redirect()->route('sheets.single', ['id' => $id]);
     }

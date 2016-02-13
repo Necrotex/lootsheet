@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use App\Models\Sheet;
 use App\Models\Signature;
+use Illuminate\Support\Facades\Auth;
 
 class SignatureController extends Controller
 {
@@ -26,7 +27,7 @@ class SignatureController extends Controller
         $signature->sig_type    = $sig[1];
         $signature->sig_group   = $sig[2];
         $signature->sig_name    = $sig[3];
-        $signature->creator     = ''; //todo: Auth::user()
+        $signature->user_id     = Auth::user()->id;
         $signature->save();
 
         $sheet = new Sheet();

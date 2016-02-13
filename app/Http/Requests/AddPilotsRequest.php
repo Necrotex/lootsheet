@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Requests;
+use Illuminate\Support\Facades\Auth;
 
 class AddPilotsRequest extends Request
 {
@@ -11,7 +12,7 @@ class AddPilotsRequest extends Request
      */
     public function authorize()
     {
-        return true; //todo: auth
+        return Auth::check();
     }
 
     /**

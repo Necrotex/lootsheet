@@ -23,6 +23,8 @@ class CreateCommentsTable extends Migration
 
         Schema::table('comments', function ($table) {
             $table->foreign('sheet_id')->references('id')->on('sheet');
+            $table->foreign('user_id')->references('id')->on('users');
+
         });
     }
 

@@ -12,4 +12,9 @@ class Comment extends Model
     {
         return $this->belongsTo('App\Models\Sheet', 'sheet_id');
     }
+
+    public function user()
+    {
+        return $this->hasOne('App\Models\User', 'id');
+    }
 }

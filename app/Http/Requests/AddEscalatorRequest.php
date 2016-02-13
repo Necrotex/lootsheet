@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Requests;
+use Illuminate\Support\Facades\Auth;
 
 class AddEscalatorRequest extends Request
 {
@@ -11,7 +12,7 @@ class AddEscalatorRequest extends Request
      */
     public function authorize()
     {
-        return true; //todo: do auth
+        return Auth::check();
     }
 
     /**

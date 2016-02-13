@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Requests;
+use Illuminate\Support\Facades\Auth;
 
 class SheetActionRequest extends Request
 {
@@ -11,7 +12,7 @@ class SheetActionRequest extends Request
      */
     public function authorize()
     {
-        return true; // todo: authorization
+        return Auth::check();
     }
 
     /**
