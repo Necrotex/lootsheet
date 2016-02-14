@@ -17,10 +17,13 @@
 
                 <?php if(Auth::check()): ?>
                     <li>
-                        <a href="<?= URL::route('sig.new') ?>">Add new Site</a>
+                        <a href="<?= URL::route('sig.new') ?>">Add Site</a>
                     </li>
                     <li>
                         <a href="<?= URL::route('sheets.all') ?>">Sheets</a>
+                    </li>
+                    <li>
+                        <a href="<?= URL::route('stats.all') ?>">Stats</a>
                     </li>
                 <?php endif; ?>
             </ul>
@@ -32,9 +35,6 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="<?= URL::route('options.all') ?>">Options</a>
-                            </li>
-                            <li>
-                                <a href="<?= URL::route('stats.all') ?>">Stats</a>
                             </li>
                             <li>
                                 <a href="<?= URL::route('admin.index') ?>">Users</a>

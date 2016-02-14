@@ -12,10 +12,13 @@
 |
 */
 
-//todo: protect routs with auth
-Route::group(['middleware' => ['web', 'auth']], function () {
+Route::group(['middleware' => ['web']], function () {
     Route::get('/', ['uses' => 'HomeController@index', 'as' => 'home']);
+    Route::get('/login', ['uses' => 'AuthController@login', 'as' => 'auth.login']);
+    Route::get('/auth/sso', ['uses' => 'AuthController@callback', 'as' => 'auth.callback']);
+});
 
+Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/sig/new', ['uses' => 'SignatureController@index', 'as' => 'sig.new']);
     Route::post('/sig/create', ['uses' => 'SignatureController@create', 'as' => 'sig.create']);
 
@@ -35,15 +38,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/stats', ['uses' => 'StatsController@index', 'as' => 'stats.all']);
 
     Route::get('/logout', ['uses' => 'AuthController@logout', 'as' => 'auth.logout']);
-    Route::get('/auth/sso', ['uses' => 'AuthController@callback', 'as' => 'auth.callback']);
 });
-
-Route::group(['middleware' => ['web']], function () {
-    Route::get('/', ['uses' => 'HomeController@index', 'as' => 'home']);
-    Route::get('/login', ['uses' => 'AuthController@login', 'as' => 'auth.login']);
-    Route::get('/auth/sso', ['uses' => 'AuthController@callback', 'as' => 'auth.callback']);
-});
-
 
 Route::group(['middleware' => ['web', 'admin']], function () {
     Route::get('/admin', ['uses' => 'AdminController@index', 'as' => 'admin.index']);

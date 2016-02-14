@@ -118,7 +118,7 @@ if (!$site->active && !$site->finsihed && !$site->sheet->is_paid):?>
     </div>
 
     <div class="col-md-3">
-        <?php if (!$site->finished): ?>
+        <?php if (!$site->finished && $site->active): ?>
             <div class="jumbotron">
                 <?php if ($site->sheet->pilots->where('role', 'Bookmarker')->count() == 0):
                     echo Modal::named('add_bookmarker')

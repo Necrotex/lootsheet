@@ -16,7 +16,8 @@
     "barryvdh/laravel-debugbar": "^2.1",
     "patricktalmadge/bootstrapper": "^5.9",
     "guzzlehttp/guzzle": "^6.1",
-    "nesbot/carbon": "^1.21"
+    "nesbot/carbon": "^1.21",
+    "khill/lavacharts": "^3.0"
   },
   "require-dev": {
     "fzaninotto/faker": "~1.4",

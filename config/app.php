@@ -151,7 +151,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Watson\BootstrapForm\BootstrapFormServiceProvider::class,
         Bootstrapper\BootstrapperL5ServiceProvider::class,
-
+        Khill\Lavacharts\Laravel\LavachartsServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -219,7 +219,6 @@ return [
         'Modal' => 'Bootstrapper\Facades\Modal',
         'Button' => 'Bootstrapper\Facades\Button',
         'Badge' => 'Bootstrapper\Facades\Badge',
-
     ],
 
 ];
