@@ -23,7 +23,14 @@ class MarkAsFinishedRequest extends Request
     public function rules()
     {
         return [
-            'payout' => 'required|numeric'
+            'payout' => 'required|integer|min:1'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'payout.min' => 'Must be a positive number above 1.',
         ];
     }
 }
