@@ -153,7 +153,8 @@ if (!$site->active && !$site->finsihed && !$site->sheet->is_paid):?>
             </div>
         <?php endif; ?>
 
-        <?php if (!$site->sheet->is_paid && $site->sheet->pilots->count() > 0): ?>
+        <?php if (!$site->sheet->is_paid && $site->sheet->pilots()
+                ->whereNotIn('role', ['Bookmarker', 'Escalator', 'Defanger'])->count() > 0): ?>
             <div class="jumbotron">
                 <?php if (!$site->finished  && $site->active): ?>
                     <div>
