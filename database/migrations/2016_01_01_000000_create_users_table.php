@@ -16,6 +16,8 @@ class CreateUsersTable extends Migration
             $table->increments('id')->index();
             $table->string('name');
             $table->integer('character_id');
+            $table->integer('corp_id')->unsigned();
+            $table->integer('allianz_id')->unsigned()->default(0);
             $table->string('character_owner_hash');
             $table->boolean('admin')->default(false);
             $table->rememberToken();

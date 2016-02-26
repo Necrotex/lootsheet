@@ -2,97 +2,133 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests;
+use App\Models\Option;
 use App\Models\User;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class AuthController extends Controller
 {
-	protected $guard = 'admin';
+    protected $guard = 'admin';
 
-    public function login(){
-	    session(['state' => uniqid()]);
+    public function login()
+    {
+        if (config('app.debug') == true) {
+            $user = User::firstOrCreate(['character_id' => 1]);
+            $user->character_id = 1;
+            $user->name = 'Grimm Debug';
+            $user->corp_id = 98224068;
+            $user->allianz_id = 99006112;
+            $user->character_owner_hash = "wewwewewe";
+            $user->admin = true; //todo: remove later when deploying
+            $user->save();
 
-	    $uri = [
-		    'response_type' => 'code',
-		    'redirect_uri' => route('auth.callback'),
-		    'client_id' => config('eve_sso.client_id'),
-		    'scope' => '',
-		    'state' => session('state')
-	    ];
+            Auth::login($user);
 
-		$request_url = config('eve_sso.url_auth') . '?' . urldecode(http_build_query($uri));
+            return redirect()->route('home');
+        }
 
-	    return new RedirectResponse($request_url);
+        session(['state' => uniqid()]);
+
+        $uri = [
+            'response_type' => 'code',
+            'redirect_uri' => route('auth.callback'),
+            'client_id' => config('eve_sso.client_id'),
+            'scope' => '',
+            'state' => session('state'),
+        ];
+
+        $request_url = config('eve_sso.url_auth').'?'.urldecode(http_build_query($uri));
+
+        return new RedirectResponse($request_url);
     }
 
-	public function callback(Request $request){
-		$auth = 'Authorization: Basic ' . base64_encode(config('eve_sso.client_id') . ':' . config('eve_sso.client_secret'));
+    public function callback(Request $request)
+    {
+        $auth = 'Authorization: Basic '.base64_encode(config('eve_sso.client_id').':'.config('eve_sso.client_secret'));
 
-		$fields = [
-			'grant_type' => 'authorization_code',
-			'code' => $request->input('code')
-		];
+        $fields = [
+            'grant_type' => 'authorization_code',
+            'code' => $request->input('code'),
+        ];
 
-		$uri = urldecode(http_build_query($fields));
+        $uri = urldecode(http_build_query($fields));
 
-		$client = new Client();
-		$response = $client->request('POST', config('eve_sso.url_token'),
-		                 [
-			                 'auth' => [config('eve_sso.client_id'), config('eve_sso.client_secret')],
-			                 'allow_redirects' => TRUE,
-			                 'form_params' => $fields
-		                 ]
-		);
+        $client = new Client();
+        $response = $client->request(
+            'POST',
+            config('eve_sso.url_token'),
+            [
+                'auth' => [config('eve_sso.client_id'), config('eve_sso.client_secret')],
+                'allow_redirects' => true,
+                'form_params' => $fields,
+            ]
+        );
 
-		$body = $response->getBody();
-		$data = json_decode($body->getContents());
+        $body = $response->getBody();
+        $data = json_decode($body->getContents());
 
-		//get character data
-		$header = [
-			'Authorization' => 'Bearer ' . $data->access_token
-		];
+        //get character data
+        $header = [
+            'Authorization' => 'Bearer '.$data->access_token,
+        ];
 
-		$response = $client->request('GET', config('eve_sso.url_verify'),
-		                             [
-			                             'headers' => $header,
+        $response = $client->request(
+            'GET',
+            config('eve_sso.url_verify'),
+            [
+                'headers' => $header,
+            ]
+        );
 
-		                             ]
-		);
+        $body = $response->getBody();
+        $character = json_decode($body->getContents());
 
-		$body = $response->getBody();
-		$character = json_decode($body->getContents());
+        $xml_api_url = 'https://api.eveonline.com/eve/CharacterAffiliation.xml.aspx?ids='.$character->CharacterID;
+        $response = $client->request('GET', $xml_api_url);
 
-		$user = User::firstOrCreate(['character_id' => $character->CharacterID]);
-		$user->character_id = $character->CharacterID;
-		$user->name = $character->CharacterName;
-		$user->character_owner_hash = $character->CharacterOwnerHash;
+        $xml = simplexml_load_string($response);
 
-		if($user->character_id == env('LOOTSHEET_ADMIN_ID')){
-			$user->admin = true;
-		}
+        if (isset($xml->result->rowset->row->attributes()["characterID"])) {
+		    return redirect()->route('home')->withErrors(['login' => 'Character not valid.']);
+        }
 
-		$user->admin = true; //todo: remove later when deploying
+        $corp_id = (string)$xml->result->rowset->row->attributes()["corporationID"];
+        $allianz_id = (string)$xml->result->rowset->row->attributes()["allianceID"];
 
-		$user->save();
+        $option = Option::where('key',  'allowed_corps')->where('value', $user->corp_id)->first();
+        $admin = false;
+        if ($user->character_id == env('LOOTSHEET_ADMIN_ID')) {
+            $admin = true;
+        }
 
-		Auth::login($user);
+        if(!$option && !$admin)
+            return redirect()->route('home')->withErrors(['login' => 'Your Corporation is not allowed to use this lootsheet!']);
 
-		return redirect()->route('home');
-	}
+        $user = User::firstOrCreate(['character_id' => $character->CharacterID]);
+        $user->character_id = $character->CharacterID;
+        $user->name = $character->CharacterName;
+        $user->corp_id = $corp_id;
+        $user->allianz_id = $allianz_id;
+        $user->character_owner_hash = $character->CharacterOwnerHash;
+        $user->admin = $admin;
+        $user->save();
 
-	public function logout(Request $request){
-		Auth::logout();
+        Auth::login($user);
 
-		return redirect()->route('home');
-	}
+        return redirect()->route('home');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        return redirect()->route('home');
+    }
 
 
 }

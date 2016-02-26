@@ -4,13 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Models\Option;
+use Illuminate\Http\Request;
 
 class OptionsController extends Controller
 {
     public function index()
     {
-        $options = Option::all();
+        $options = Option::where('key', '!=', 'allowed_corps')->get();
+        $allowed_corps = OPtion::where('key', 'allowed_corps')->get();
+
         view()->share('options', $options);
+        view()->share('allowed_corps', $allowed_corps);
 
         return $this->view('options.overview');
     }
@@ -32,5 +36,37 @@ class OptionsController extends Controller
         $option->save();
 
         return redirect()->route('options.all');
+    }
+
+    public function addCorp(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'name' => 'required',
+                'value' => 'required|numeric',
+            ]
+        );
+
+        $option = new Option();
+        $option->name = $request->name;
+        $option->value = $request->value;
+        $option->key = 'allowed_corps';
+        $option->type = 'meta';
+
+        $option->save();
+
+        return back();
+    }
+
+    public function removeCorp(Request $request, $id)
+    {
+        if($request->_action != 'remove_corp')
+            return back()->withErrors(['error' => 'Wrong action!']);
+
+        $option = Option::findOrFail($id);
+        $option->delete();
+
+        return back();
     }
 }

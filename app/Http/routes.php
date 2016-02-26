@@ -49,4 +49,6 @@ Route::group(['middleware' => ['web', 'admin']], function () {
 
     Route::get('/options', ['uses' => 'OptionsController@index', 'as' => 'options.all']);
     Route::post('/options/{id}', ['uses' => 'OptionsController@action', 'as' => 'options.action']);
+    Route::post('/options/corp/add', ['uses' => 'OptionsController@addCorp', 'as' => 'options.add_corp']);
+    Route::post('/options/corp/remote/{id}', ['uses' => 'OptionsController@removeCorp', 'as' => 'options.remove_corp']);
 });

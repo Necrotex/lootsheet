@@ -13,6 +13,7 @@ class OptionsTableSeeder extends Seeder
     {
         DB::table('options')->insert(
             [
+
                 //corp cut
                 [
                     'key'   => 'corp_cut',

@@ -17,7 +17,7 @@ class CreateOptionsTable extends Migration
             $table->timestamps();
             $table->string('name');
             $table->string('key');
-            $table->float('value');
+            $table->double('value');
             $table->string('type')->nullable();
         });
     }

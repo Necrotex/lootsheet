@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Models\Comment;
-use App\Models\Comments;
 use App\Models\Option;
 use App\Models\Pilot;
 use App\Models\Signature;
