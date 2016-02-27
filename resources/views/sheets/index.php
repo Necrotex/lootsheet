@@ -44,3 +44,5 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+
+<?php echo $sites->links(); ?>

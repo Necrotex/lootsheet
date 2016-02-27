@@ -14,7 +14,8 @@ class SheetController extends Controller
 {
     public function index()
     {
-        $sites = Signature::orderBy('created_at', 'DESC')->limit(50)->get();
+        $sites = Signature::orderBy('created_at', 'DESC')->paginate(10);
+
         view()->share('sites', $sites);
 
         return $this->view('sheets.index');
