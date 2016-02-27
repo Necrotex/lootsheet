@@ -31,7 +31,7 @@ class CreateSignatureRequest extends Request
     public function messages()
     {
         return [
-            'sig_paste.signature' => 'Wrong format', //todo: write good error message
+            'sig_paste.signature' => 'Sorry, I can not parse this. Please copy and paste the signature again.',
         ];
     }
 }

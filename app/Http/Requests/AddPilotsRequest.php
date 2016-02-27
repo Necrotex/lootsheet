@@ -30,7 +30,7 @@ class AddPilotsRequest extends Request
     public function messages()
     {
         return [
-            'pilots.fleet_composition' => 'Wrong format.', //todo: write good error message
+            'pilots.fleet_composition' => 'Sorry, I can not parse this. Please copy and paste the fleet composition again.',
         ];
     }
 }
