@@ -1,9 +1,9 @@
 <div class="row">
     <div class="col-md-12">
         <div class="jumbotron">
-            <h1>Wellcome to the C0RE Lootsheet</h1>
+            <h1>Welcome to the C0RE Lootsheet</h1>
 
-            <p>Here's a text with some explainations how to use this app.</p>
+            <p>Here's a text with some explanations how to use this app.</p>
         </div>
     </div>
 </div>
