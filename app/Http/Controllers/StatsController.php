@@ -23,7 +23,7 @@ class StatsController extends Controller
         $this->_compareBomber();
         $this->_compareShips();
 
-        $sheets = Sheet::all();
+        $sheets = Sheet::where('is_paid', 1)->get();
         view()->share('sheets', $sheets);
 
         return $this->view('stats.index');
@@ -83,6 +83,7 @@ class StatsController extends Controller
                     ->subWeek(),
                 Carbon::now()
             ])
+            ->where('is_paid', 1)
             ->groupBy('date')
             ->orderBy('date')
             ->get('date', 'sum');
@@ -94,6 +95,7 @@ class StatsController extends Controller
                     ->subWeek(),
                 Carbon::now()
             ])
+            ->where('is_paid', 1)
             ->groupBy('date')
             ->orderBy('date')
             ->get('date', 'sum');
@@ -105,6 +107,7 @@ class StatsController extends Controller
                     ->subWeek(),
                 Carbon::now()
             ])
+            ->where('is_paid', 1)
             ->groupBy('date')
             ->orderBy('date')
             ->get('date', 'sum');
