@@ -2,6 +2,13 @@
     <div class="alert alert-danger" role="alert"><?php echo $errors->first(); ?></div>
 <?php endif;
 
+if (Session::has('ignored')):
+    foreach(Session::get('ignored') as $ignore): ?>
+    <div class="alert alert-warning" role="alert"><?php echo $ignore; ?></div>
+<?php
+    endforeach;
+endif;
+
 if ($site->sheet->is_paid):?>
     <div class="alert alert-success" role="alert" style="">This sheet is complete. Nothing do to here. Move along.</div>
 <?php endif;
@@ -173,8 +180,9 @@ if (!$site->active && !$site->finsihed && !$site->sheet->is_paid):?>
                                     <div>
                                         <?php
                                         echo Modal::named('mark_paid')
-                                            ->withTitle('Mark as paid')
-                                            ->withButton(Button::success('Mark as paid')->block())
+                                            ->withTitle('Pay Corp Cut
+                                            ')
+                                            ->withButton(Button::success('Pay Corp Cut')->block())
                                             ->withBody(view('modals.mark_as_paid')->with('id', $site->id)->render());
                                         ?>
                                     </div>

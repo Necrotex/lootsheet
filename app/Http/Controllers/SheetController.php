@@ -130,10 +130,13 @@ class SheetController extends Controller
         $allowed_ship_types = ['Stealth Bomber', 'Marauder', 'Dreadnought', 'Carrier'];
         $lines = explode("\n", $request->input('pilots'));
 
+        $ignored = [];
+
         foreach ($lines as $line) {
             $data = explode("\t", $line);
 
             if (!in_array($data[3], $allowed_ship_types)) {
+                $ignored[] = 'Ignored ' . $data[0] . ' because of ship type.';
                 continue;
             }
 
@@ -165,7 +168,7 @@ class SheetController extends Controller
             $site->sheet->save();
         }
 
-        return redirect()->route('sheets.single', ['id' => $id]);
+        return redirect()->route('sheets.single', ['id' => $id])->with('ignored', $ignored);
     }
 
     public function markAsFinished(Requests\MarkAsFinishedRequest $request, $id)
