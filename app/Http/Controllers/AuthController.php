@@ -17,20 +17,6 @@ class AuthController extends Controller
 
     public function login()
     {
-        if (config('app.debug') == true) {
-            $user = User::firstOrCreate(['character_id' => 1]);
-            $user->character_id = 1;
-            $user->name = 'Grimm Debug';
-            $user->corp_id = 98224068;
-            $user->allianz_id = 99006112;
-            $user->character_owner_hash = "wewwewewe";
-            $user->admin = true; //todo: remove later when deploying
-            $user->save();
-
-            Auth::login($user);
-
-            return redirect()->route('home');
-        }
 
         session(['state' => uniqid()]);
 
@@ -91,18 +77,19 @@ class AuthController extends Controller
         $xml_api_url = 'https://api.eveonline.com/eve/CharacterAffiliation.xml.aspx?ids='.$character->CharacterID;
         $response = $client->request('GET', $xml_api_url);
 
-        $xml = simplexml_load_string($response);
+        $xml = simplexml_load_string($response->getBody()->getContents());
 
-        if (isset($xml->result->rowset->row->attributes()["characterID"])) {
+        if (!isset($xml->result->rowset->row->attributes()["characterID"])) {
 		    return redirect()->route('home')->withErrors(['login' => 'Character not valid.']);
         }
 
         $corp_id = (string)$xml->result->rowset->row->attributes()["corporationID"];
         $allianz_id = (string)$xml->result->rowset->row->attributes()["allianceID"];
 
-        $option = Option::where('key',  'allowed_corps')->where('value', $user->corp_id)->first();
+        $option = Option::where('key',  'allowed_corps')->where('value', $corp_id)->first();
         $admin = false;
-        if ($user->character_id == env('LOOTSHEET_ADMIN_ID')) {
+
+        if ($character->CharacterID == env('LOOTSHEET_ADMIN_ID')) {
             $admin = true;
         }
 
