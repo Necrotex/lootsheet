@@ -41,11 +41,12 @@ class StatsController extends Controller
             ->addNumberColumn('Number');
 
         foreach($ships as $ship){
-            $table->addRow([$ship->ship, $ship->count]);
+            $table->addRow([$ship->ship  . ' ('.$ship->count.')', count($ships) / $ship->count]);
         }
 
         Lava::PieChart('bomber', $table, [
             'is3D'   => false,
+            'pieSliceText' => 'percentage'
         ]);
     }
 
@@ -59,16 +60,16 @@ class StatsController extends Controller
 
         $table = Lava::DataTable()
             ->addStringColumn('Ship')
+            ->addNumberColumn('% of all ships')
             ->addNumberColumn('Number');
 
         foreach($ships as $ship){
-            $table->addRow([$ship->ship, $ship->count]);
+            $table->addRow([$ship->ship . ' ('.$ship->count.')', count($ships) / $ship->count, $ship->count]);
         }
 
         Lava::PieChart('ships', $table, [
             'is3D'   => false,
-            'sliceVisibilityThreshold' => 0,
-            'reverseCategories' => false,
+            'pieSliceText' => 'percentage'
         ]);
     }
 
