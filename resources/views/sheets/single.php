@@ -144,11 +144,12 @@ if (!$site->active && !$site->finsihed && !$site->sheet->is_paid):?>
                 endif;
                 ?>
 
-                <?php
+                <?php if($site->sheet->pilots->where('role', 'Escalator')->count() == 4 && $site->sheet->pilots->where('role', 'Defanger')->count() == 1):
                 echo Modal::named('add_pilots')
                     ->withTitle('Add Pilots')
                     ->withButton(Button::withValue('Add Pilots')->block())
                     ->withBody(view('modals.add_pilots')->with('id', $site->id)->render());
+                    endif;
                 ?>
             </div>
         <?php endif; ?>
